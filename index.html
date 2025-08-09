@@ -3,81 +3,74 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Neon Kutucuklar</title>
+<title>Neon Kartvizit</title>
 <style>
-  /* Genel ayarlar */
-  body, html {
-    margin: 0; padding: 0; height: 100vh; width: 100vw;
+  body {
+    margin: 0;
+    padding: 0;
     background: #000; /* siyah arka plan */
+    font-family: Arial, sans-serif;
     display: flex;
     justify-content: center;
-    align-items: center;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding-top: 40px;
   }
 
-  /* Kutuların konteyneri */
-  .container {
-    display: flex;
-    gap: 30px;
-    flex-wrap: wrap;
-    max-width: 900px;
-    padding: 20px;
-  }
-
-  /* Tek kutu stili */
-  .box {
-    background: #fff; /* beyaz kutu */
-    border: 3px solid #ff1744; /* neon kırmızı kenar */
-    border-radius: 14px;
+  .card {
+    background: #fff; /* kutu beyaz */
+    border: 2px solid #ff1744; /* kırmızı neon kenar */
+    border-radius: 15px;
     box-shadow:
-      0 0 8px #ff1744,
-      0 0 20px #ff1744,
-      0 0 30px #ff1744;
-    width: 260px;
-    min-height: 140px;
-    padding: 20px;
-    color: #000; /* yazı siyah */
-    position: relative;
-    cursor: pointer;
-    transition: transform 0.25s ease, box-shadow 0.3s ease;
+      0 0 5px #ff1744,
+      0 0 10px #ff1744,
+      0 0 20px #ff1744;
+    width: 320px;
+    overflow: hidden;
+    text-align: center;
   }
 
-  /* Neon yazı efekti için */
-  .box h2, .box p {
+  .card img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .content {
+    padding: 15px;
+  }
+
+  /* Siyah neon yazı efekti */
+  .content h2, .content p {
     color: #000;
     text-shadow:
-      0 0 3px #ff1744,
-      0 0 6px #ff1744,
-      0 0 9px #ff1744,
-      0 0 12px #ff1744;
-    margin: 0 0 10px 0;
+      0 0 4px #fff,
+      0 0 8px #ccc;
+    margin: 8px 0;
   }
 
   /* Hover efekti */
-  .box:hover {
-    transform: scale(1.05);
+  .card:hover {
+    transform: scale(1.03);
+    transition: 0.3s;
     box-shadow:
-      0 0 20px #ff1744,
-      0 0 40px #ff1744,
-      0 0 60px #ff1744,
-      0 0 80px #ff1744;
+      0 0 15px #ff1744,
+      0 0 30px #ff1744;
   }
 </style>
 </head>
 <body>
-  <div class="container">
-    <div class="box">
-      <h2>Başlık 1</h2>
-      <p>Buraya istediğin yazıyı yazabilirsin, neon havası var.</p>
-    </div>
-    <div class="box">
-      <h2>Başlık 2</h2>
-      <p>Kutu beyaz, kenar kırmızı neon, yazı da siyah neon.</p>
-    </div>
-    <div class="box">
-      <h2>Başlık 3</h2>
-      <p>Hover yapınca kutu biraz büyür, parlamaya başlar.</p>
-    </div>
+
+<div class="card">
+  <!-- Üstte fotoğraf -->
+  <img src="https://via.placeholder.com/320x180" alt="Profil Fotoğrafı">
+  
+  <!-- Altındaki yazılar -->
+  <div class="content">
+    <h2>Deneme Başlık</h2>
+    <p>Deneme yazısı buraya gelecek.</p>
   </div>
+</div>
+
 </body>
 </html>
