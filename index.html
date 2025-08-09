@@ -1,76 +1,313 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Neon Kartvizit</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>AdanaGlow - Neon Kartvizit</title>
 <style>
-  body {
-    margin: 0;
-    padding: 0;
-    background: #000; /* siyah arka plan */
-    font-family: Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    min-height: 100vh;
-    padding-top: 40px;
+  :root{
+    --bg: #000;               /* siyah arka plan */
+    --neon: #ff1744;          /* neon kenar rengi (kullanılan glow) */
+    --box-white: #ffffff;     /* kutu iç rengi */
+    --text-black: #000000;    /* yazı rengi (siyah neon) */
+    --card-w: 220px;          /* kutu genişliği (videoya yakın) */
+    --card-h: 140px;          /* kutu yüksekliği */
+    --radius: 12px;
+  }
+
+  /* Reset */
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;background:var(--bg);font-family:Inter, "Segoe UI", Arial, sans-serif;color:var(--text-black);-webkit-font-smoothing:antialiased;}
+  body{display:flex;flex-direction:column;align-items:center;padding:36px 18px;overflow:hidden}
+
+/* ----------------
+   ARKA PLAN: Canvas
+   ---------------- */
+  #bgCanvas{position:fixed;inset:0;width:100vw;height:100vh;z-index:0;display:block}
+
+/* küçük parıltılar (yıldız benzeri) - ayrıca JS ile hareketli */
+  .bg-glow {
+    position:fixed; inset:0; pointer-events:none; z-index:1;
+  }
+
+/* ----------------
+   KONTENYER
+   ---------------- */
+  .wrap{
+    position:relative; z-index:5; width:100%; max-width:980px; display:flex; flex-direction:column; align-items:center; gap:20px;
+    animation: fadeInUp 600ms cubic-bezier(.2,.9,.3,1) forwards;
+    opacity:0; transform: translateY(18px);
+    animation-delay: 100ms;
+  }
+
+/* Fade-in animasyonu (11) */
+  @keyframes fadeInUp {
+    to { opacity:1; transform: translateY(0); }
+  }
+
+/* ----------------
+   PROFİL FOTO (üstte)
+   ---------------- */
+  .profile {
+    display:flex; flex-direction:column; align-items:center; gap:12px;
+  }
+  .avatar {
+    width:160px; height:160px; border-radius:50%; overflow:hidden; position:relative;
+    background:var(--box-white);
+    display:grid; place-items:center;
+    border:3px solid transparent;
+    /* neon halo döngüsü (8) */
+    box-shadow:
+      0 0 12px rgba(255,23,68,0.18),
+      0 0 28px rgba(255,23,68,0.12);
+    transition: transform 300ms ease, box-shadow 300ms ease;
+    animation: halo 2000ms infinite ease-in-out;
+  }
+  .avatar img{width:100%;height:100%;object-fit:cover;display:block}
+
+  @keyframes halo {
+    0%   { box-shadow: 0 0 8px rgba(255,23,68,0.12), 0 0 24px rgba(255,23,68,0.06); transform: translateY(0); }
+    50%  { box-shadow: 0 0 20px rgba(255,23,68,0.28), 0 0 48px rgba(255,23,68,0.12); transform: translateY(-4px); }
+    100% { box-shadow: 0 0 8px rgba(255,23,68,0.12), 0 0 24px rgba(255,23,68,0.06); transform: translateY(0); }
+  }
+  .avatar:hover{transform: translateY(-6px) rotate(-1deg); animation-play-state:paused; box-shadow: 0 0 36px rgba(255,23,68,0.36);}
+
+/* foto altı metin (kutusuz) */
+  .title { text-align:center; margin:0; font-weight:700; font-size:1.05rem; color:var(--text-black);
+    /* siyah neon yazı (çevresinde açık glow) */
+    text-shadow: 0 0 4px rgba(255,255,255,0.9), 0 0 8px rgba(200,200,200,0.45);
+  }
+  .subtitle { margin:0; font-size:0.92rem; opacity:0.95; color:var(--text-black);
+    text-shadow: 0 0 3px rgba(255,255,255,0.9), 0 0 6px rgba(220,220,220,0.35);
+  }
+
+/* ----------------
+   KARTLAR (3 kutu)
+   ---------------- */
+  .cards {
+    display:flex; gap:16px; align-items:center; justify-content:center; flex-wrap:wrap;
+    width:100%;
   }
 
   .card {
-    background: #fff; /* kutu beyaz */
-    border: 2px solid #ff1744; /* kırmızı neon kenar */
-    border-radius: 15px;
-    box-shadow:
-      0 0 5px #ff1744,
-      0 0 10px #ff1744,
-      0 0 20px #ff1744;
-    width: 320px;
-    overflow: hidden;
-    text-align: center;
+    width:var(--card-w); height:var(--card-h); border-radius:var(--radius); position:relative; overflow:visible;
+    background:var(--box-white); color:var(--text-black); display:flex; align-items:center; justify-content:center;
+    font-weight:700; letter-spacing:0.3px; text-align:center;
+    transform: translateZ(0);
+    transition: transform 260ms cubic-bezier(.2,.9,.3,1), box-shadow 200ms ease;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+    /* kenar için boş (border pseudo-element ile yapılacak) */
   }
 
-  .card img {
-    width: 100%;
-    height: auto;
-    display: block;
+  /* Kutu içindeki yazı: siyah neon (yani siyah metin, etrafında parlak beyaz/gri glow) */
+  .card .txt {
+    color:var(--text-black);
+    text-shadow: 0 0 4px rgba(255,255,255,0.95), 0 0 8px rgba(210,210,210,0.6);
+    font-size:1.02rem;
+    padding:8px 10px;
   }
 
-  .content {
-    padding: 15px;
+  /* 3: Hover büyüme (scale) */
+  .card:hover{ transform: scale(1.06) translateY(-6px); z-index:6; }
+
+/* 4: KENAR AKIŞ EFEKTİ - pseudo element ile */
+  .card::before {
+    content:"";
+    position:absolute; inset:0; border-radius:var(--radius); padding:3px;
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events:none;
+  }
+  /* gerçek neon kenar: gradient bar konuldu, ardından hareket animasyonu */
+  .card::after {
+    content:"";
+    position:absolute; inset:0; border-radius:var(--radius);
+    padding:3px; /* içeriye boşluk verip flow göstereceğiz */
+    background:
+      linear-gradient(90deg,
+        rgba(255,23,68,0.0) 0%,
+        rgba(255,23,68,0.9) 25%,
+        rgba(255,23,68,0.0) 50%,
+        rgba(255,23,68,0.9) 75%,
+        rgba(255,23,68,0.0) 100%);
+    background-size: 200% 100%;
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    filter: blur(6px) saturate(130%);
+    animation: edgeFlow 2500ms linear infinite;
+    pointer-events:none;
   }
 
-  /* Siyah neon yazı efekti */
-  .content h2, .content p {
-    color: #000;
-    text-shadow:
-      0 0 4px #fff,
-      0 0 8px #ccc;
-    margin: 8px 0;
+  @keyframes edgeFlow {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
   }
 
-  /* Hover efekti */
-  .card:hover {
-    transform: scale(1.03);
-    transition: 0.3s;
-    box-shadow:
-      0 0 15px #ff1744,
-      0 0 30px #ff1744;
+  /* Hover'da kenar akışı hızlansın ve glow artsın */
+  .card:hover::after { animation-duration: 900ms; filter: blur(4px) saturate(160%); }
+
+/* responsive küçük ekran için kutular alt alta */
+  @media (max-width:760px){
+    .cards { gap:12px; }
+    .card { width:88vw; max-width:340px; height:140px; }
+    .avatar { width:140px; height:140px; }
   }
+
+/* küçük ekstra efekt: sayfa açılırken kutuların hafif "nefes" effect'i */
+  .card { animation: breathe 3500ms ease-in-out infinite; opacity:0; transform: translateY(8px); animation-fill-mode:forwards; animation-delay: 200ms }
+  .card:nth-child(1){ animation-delay: 320ms }
+  .card:nth-child(2){ animation-delay: 420ms }
+  .card:nth-child(3){ animation-delay: 520ms }
+
+  @keyframes breathe {
+    0% { opacity:0; transform: translateY(18px) scale(0.995); }
+    40% { opacity:1; transform: translateY(0) scale(1); }
+    100% { transform: translateY(0) scale(0.998); }
+  }
+
+/* ekstra: kutu hover shadow daha parlak */
+  .card:hover { box-shadow: 0 16px 40px rgba(0,0,0,0.65), 0 0 28px rgba(255,23,68,0.08); }
+
+/* görsel küçük fine-tune */
+  .cards .card + .card { margin-left: 0; }
+
 </style>
 </head>
 <body>
 
-<div class="card">
-  <!-- Üstte fotoğraf -->
-  <img src="https://via.placeholder.com/320x180" alt="Profil Fotoğrafı">
-  
-  <!-- Altındaki yazılar -->
-  <div class="content">
-    <h2>Deneme Başlık</h2>
-    <p>Deneme yazısı buraya gelecek.</p>
+<!-- ARKA PLAN CANVAS (10: hareketli yıldız/ışıklar) -->
+<canvas id="bgCanvas"></canvas>
+<div class="bg-glow"></div>
+
+<!-- İÇERİK -->
+<div class="wrap" id="wrap">
+  <!-- Profil -->
+  <div class="profile">
+    <div class="avatar" title="Profil Fotoğrafı">
+      <!-- placeholder, kendi fotoğrafını koy -->
+      <img src="https://i.pravatar.cc/400?img=12" alt="Profil">
+    </div>
+    <div class="meta">
+      <h3 class="title">Deneme Başlık</h3>
+      <p class="subtitle">Deneme yazısı buraya gelecek.</p>
+    </div>
+  </div>
+
+  <!-- 3 kutu (videodaki gibi boyutta) -->
+  <div class="cards" id="cards">
+    <div class="card"><div class="txt">Deneme</div></div>
+    <div class="card"><div class="txt">Deneme</div></div>
+    <div class="card"><div class="txt">Deneme</div></div>
   </div>
 </div>
 
+<script>
+/* -------------  ARKA PLAN CANVAS: Yıldızcık / parıltı animasyonu (10)  ------------- */
+(() => {
+  const canvas = document.getElementById('bgCanvas');
+  const ctx = canvas.getContext('2d');
+  let DPR = Math.max(1, window.devicePixelRatio || 1);
+  let W, H;
+  function resize() {
+    W = window.innerWidth;
+    H = window.innerHeight;
+    canvas.width = W * DPR;
+    canvas.height = H * DPR;
+    canvas.style.width = W + 'px';
+    canvas.style.height = H + 'px';
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  // parçacıklar
+  const count = Math.round((W * H) / 80000) + 30; // ekran boyutuna göre
+  const stars = [];
+  function rand(min,max){return Math.random()*(max-min)+min}
+  for(let i=0;i<count;i++){
+    stars.push({
+      x: Math.random()*W,
+      y: Math.random()*H,
+      r: rand(0.4,2.2),
+      alpha: rand(0.05,0.3),
+      vy: rand(0.02,0.3),
+      phase: Math.random()*Math.PI*2
+    });
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    // hafif kırmızı büyük blur spotlar (arka plandaki glowlar)
+    drawGlow(W*0.12, H*0.12, 260, 'rgba(255,23,68,0.06)');
+    drawGlow(W*0.88, H*0.82, 220, 'rgba(255,23,68,0.04)');
+    // yıldızlar
+    for(const s of stars){
+      s.y += s.vy * 0.6; // yavaş aşağı kayma
+      s.phase += 0.01;
+      let alp = s.alpha * (0.5 + 0.5 * Math.sin(s.phase));
+      if(s.y > H + 10){ s.y = -10; s.x = Math.random()*W; }
+      ctx.beginPath();
+      ctx.fillStyle = 'rgba(255,255,255,'+alp+')';
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+      ctx.fill();
+    }
+    requestAnimationFrame(draw);
+  }
+
+  function drawGlow(x,y,size,color){
+    const g = ctx.createRadialGradient(x,y,0,x,y,size);
+    g.addColorStop(0, color);
+    g.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = g;
+    ctx.fillRect(x-size, y-size, size*2, size*2);
+  }
+
+  draw();
+
+  // rebuild stars on resize to keep density ok
+  window.addEventListener('resize', () => {
+    // small debounce
+    setTimeout(() => {
+      while(stars.length>0) stars.pop();
+      const newCount = Math.round((window.innerWidth * window.innerHeight) / 80000) + 30;
+      for(let i=0;i<newCount;i++){
+        stars.push({ x: Math.random()*window.innerWidth, y: Math.random()*window.innerHeight, r: rand(0.4,2.2), alpha: rand(0.05,0.3), vy: rand(0.02,0.3), phase: Math.random()*Math.PI*2 });
+      }
+    },160);
+  });
+})();
+
+/* -------------  İnteraktif küçük dokunuş: avatar hover küçük parça  ------------- */
+(() => {
+  const avatar = document.querySelector('.avatar');
+  avatar.addEventListener('mouseenter', () => {
+    // hızlıca hafif parlatma
+    avatar.style.boxShadow = '0 0 44px rgba(255,23,68,0.36)';
+  });
+  avatar.addEventListener('mouseleave', () => {
+    avatar.style.boxShadow = '';
+  });
+})();
+
+/* -------------  Accessibility: keyboard focus hover eşdeğeri ------------- */
+document.querySelectorAll('.card').forEach(c => {
+  c.setAttribute('tabindex', '0');
+  c.addEventListener('focus', () => c.classList.add('focused'));
+  c.addEventListener('blur', () => c.classList.remove('focused'));
+});
+
+/* -------------  İnce ayar: sayfa yüklenince wrap görünür yap (fade-in) ------------- */
+window.addEventListener('load', () => {
+  const wrap = document.getElementById('wrap');
+  wrap.style.opacity = '1';
+  wrap.style.transform = 'translateY(0)';
+});
+</script>
 </body>
 </html>
