@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Neon Kartvizit</title>
 <style>
     /* Arka plan - yıldız efekti */
@@ -25,10 +25,8 @@
     body::before {
         content: "";
         position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
         background: radial-gradient(white, transparent) 1px 1px / 3px 3px;
         animation: starsMove 60s linear infinite;
         z-index: 0;
@@ -52,10 +50,13 @@
     /* Profil fotoğrafı */
     .profile-pic {
         width: 180px;
-        height: 180px;
-        border-radius: 50%;
+        height: 120px; /* Dikdörtgen oldu */
+        border-radius: 15px;
         border: 4px solid red;
         animation: halo 2s infinite alternate ease-in-out;
+        object-fit: cover;
+        margin: 0 auto;
+        display: block;
     }
 
     @keyframes halo {
@@ -74,16 +75,17 @@
     .cards {
         display: flex;
         flex-direction: column;
-        gap: 20px;
+        gap: 25px; /* Boşluk arttı */
         margin-top: 40px;
+        padding: 0 10px; /* Kenarlardan biraz boşluk */
     }
 
     .card {
-        background: white;
-        color: black;
-        padding: 20px;
+        background: black; /* Tam siyah */
+        color: white;
+        padding: 20px 30px; /* İç boşluk biraz daha geniş */
         font-size: 18px;
-        border-radius: 12px;
+        border-radius: 15px;
         width: 100%;
         height: 80px;
         display: flex;
@@ -92,6 +94,7 @@
         position: relative;
         overflow: hidden;
         transition: transform 0.3s ease;
+        box-sizing: border-box;
     }
 
     /* Hover büyüme */
@@ -99,40 +102,37 @@
         transform: scale(1.05);
     }
 
-    /* Neon kenar akışı */
+    /* Neon kenar akışı (sabit, animasyonsuz) */
     .card::before {
         content: "";
         position: absolute;
-        top: -2px;
-        left: -2px;
-        right: -2px;
-        bottom: -2px;
-        background: linear-gradient(90deg, red, transparent, red);
+        top: -3px;
+        left: -3px;
+        right: -3px;
+        bottom: -3px;
+        background: linear-gradient(90deg, red, orange, red);
+        background-size: 100% 100%;
         z-index: -1;
-        animation: borderFlow 2s linear infinite;
+        filter: blur(5px);
+        border-radius: 15px;
+        animation: none; /* Animasyon yok */
     }
-
-    @keyframes borderFlow {
-        0% {background-position: 0 0;}
-        100% {background-position: 200% 0;}
-    }
-
 </style>
 </head>
 <body>
 
 <div class="container">
     <!-- Profil fotoğrafı -->
-    <img src="https://via.placeholder.com/180" alt="Profil Fotoğrafı" class="profile-pic">
+    <img src="https://via.placeholder.com/180x120" alt="Profil Fotoğrafı" class="profile-pic">
 
     <!-- Profil yazısı -->
     <div class="profile-text">Deneme</div>
 
     <!-- Kutular -->
     <div class="cards">
-        <div class="card">Deneme</div>
-        <div class="card">Deneme</div>
-        <div class="card">Deneme</div>
+        <div class="card">Deneme 1</div>
+        <div class="card">Deneme 2</div>
+        <div class="card">Deneme 3</div>
     </div>
 </div>
 
