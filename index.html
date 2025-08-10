@@ -29,19 +29,19 @@
     padding:24px 12px;
   }
 
-  /* Dış çerçeve (beyaz çizgili, büyük oval) */
+  /* Dış çerçeve (beyaz çizgili, büyük oval yerine dikdörtgenimsi) */
   .frame{
     width:100%;
-    max-width:420px;           /* telefon boyutu gibi */
+    max-width:420px;
     min-height:640px;
     background:var(--card-bg);
-    border-radius:36px;
+    border-radius:15px; /* Daha az oval, dikdörtgen hissi */
     padding:28px 20px 40px;
     position:relative;
     overflow:hidden;
-    /* beyaz çift hat efekti */
-    box-shadow: 0 0 0 6px rgba(255,255,255,0.06) inset;
-    border: 6px solid var(--border);
+    /* Beyaz çift hat efekti */
+    box-shadow: 0 0 0 8px rgba(255,255,255,0.06) inset;
+    border: 8px solid var(--border); /* Kalınlık artırıldı */
   }
 
   /* İç içerik ortalanacak ve kaydırılabilir yapsın */
@@ -143,7 +143,7 @@
 
   .pill-text{
     flex:1;
-    text-align:center; /* ekran ortalanmış yazı gibi */
+    text-align:center;
     font-size:16px;
     color:var(--white);
     font-weight:500;
